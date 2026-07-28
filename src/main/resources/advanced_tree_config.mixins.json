@@ -1,0 +1,12 @@
+{
+	"required": true,
+	"package": "me.witherbuilder13.advanced_tree_config.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"mixins": [],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}

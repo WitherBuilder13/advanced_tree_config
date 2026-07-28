@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "advanced_tree_config",
+	"version": "${version}",
+	"name": "Advanced Tree Config",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/advanced_tree_config/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"me.witherbuilder13.advanced_tree_config.AdvancedTreeConfig"
+		],
+		"client": [
+			"me.witherbuilder13.advanced_tree_config.client.ATCClient"
+		],
+		"fabric-datagen": [
+			"me.witherbuilder13.advanced_tree_config.client.ATCDataGenerator"
+		]
+	},
+	"mixins": [
+		"advanced_tree_config.mixins.json",
+		{
+			"config": "advanced_tree_config.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~26.3-",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
