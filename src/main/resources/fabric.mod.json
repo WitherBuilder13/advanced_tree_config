@@ -22,7 +22,7 @@
 			"me.witherbuilder13.advanced_tree_config.client.ATCClient"
 		],
 		"fabric-datagen": [
-			"me.witherbuilder13.advanced_tree_config.client.ATCDataGenerator"
+          "me.witherbuilder13.advanced_tree_config.datagen.ATCDataGenerator"
 		]
 	},
 	"mixins": [
