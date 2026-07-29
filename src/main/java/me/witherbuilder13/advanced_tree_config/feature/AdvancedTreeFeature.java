@@ -116,7 +116,7 @@ public record AdvancedTreeFeature(List<Branch.Group> groups, boolean rotateRando
         return new BlockPos(startPos.getX() + offsetX, startPos.getY() + offsetY, startPos.getZ() + offsetZ);
     }
 
-    public static List<BlockPos> getLine(BlockPos start, BlockPos end) {
+    private static List<BlockPos> getLine(BlockPos start, BlockPos end) {
         List<BlockPos> line = new ArrayList<>();
 
         int x1 = start.getX(), y1 = start.getY(), z1 = start.getZ();
@@ -129,7 +129,6 @@ public record AdvancedTreeFeature(List<Branch.Group> groups, boolean rotateRando
 
         int x = x1, y = y1, z = z1;
 
-        // Driving axis is whichever delta is largest
         if (dx >= dy && dx >= dz) {
             int errY = dx / 2, errZ = dx / 2;
             for (int i = 0; i <= dx; i++) {
@@ -188,12 +187,12 @@ public record AdvancedTreeFeature(List<Branch.Group> groups, boolean rotateRando
                             }
                         }
                     } else if (config.shape() == BranchShape.SQUARE_CUT_CORNERS) {
-                        if ((tX > 2 && (currentPos.getX() == pos.getX() + thicknessLow(tX) || currentPos.getX() == pos.getX() + thicknessHigh(tX))) ||
-                                (tY > 2 && (currentPos.getY() == pos.getY() + thicknessLow(tY) || currentPos.getY() == pos.getY() + thicknessHigh(tY))) ||
-                                (tZ > 2 && (currentPos.getZ() == pos.getZ() + thicknessLow(tZ) || currentPos.getZ() == pos.getZ() + thicknessHigh(tZ))))
-                            continue;
-                        if (!level.setBlock(currentPos, state, 19))
-                            return false;
+                        if (!isCorner(currentPos, pos, tX, tY, tZ)) {
+                            if (state.equals(level.getBlockState(currentPos)))
+                                continue;
+                            if (!level.setBlock(currentPos, state, 19))
+                                return false;
+                        }
                     } else {
                         if (state.equals(level.getBlockState(currentPos)))
                             continue;
@@ -213,15 +212,15 @@ public record AdvancedTreeFeature(List<Branch.Group> groups, boolean rotateRando
         return thickness / 2;
     }
 
-    public static boolean isWithinEllipsoid(BlockPos pos, BlockPos center, Vec3i size) {
+    private static boolean isWithinEllipsoid(BlockPos currentPos, BlockPos centerPos, Vec3i size) {
 
-        double px = sampleCoord(pos.getX());
-        double py = sampleCoord(pos.getY());
-        double pz = sampleCoord(pos.getZ());
+        double px = sampleCoord(currentPos.getX());
+        double py = sampleCoord(currentPos.getY());
+        double pz = sampleCoord(currentPos.getZ());
 
-        double cx = centerCoord(center.getX(), size.getX());
-        double cy = centerCoord(center.getY(), size.getY());
-        double cz = centerCoord(center.getZ(), size.getZ());
+        double cx = centerCoord(centerPos.getX(), size.getX());
+        double cy = centerCoord(centerPos.getY(), size.getY());
+        double cz = centerCoord(centerPos.getZ(), size.getZ());
 
         double hx = size.getX() / 2.0;
         double hy = size.getY() / 2.0;
@@ -234,14 +233,38 @@ public record AdvancedTreeFeature(List<Branch.Group> groups, boolean rotateRando
         return (dx * dx + dy * dy + dz * dz) <= 1.0;
     }
 
-    // A block being tested always samples from its own center — this is independent of the region's parity, since the *point* is a whole block.
     private static double sampleCoord(int blockCoord) {
         return blockCoord + 0.5;
     }
 
-    // The region's geometric center depends on whether that axis's size is odd (center falls on a block's center) or even (center falls on the grid line between two blocks — no +0.5).
     private static double centerCoord(int centerBlockCoord, int axisSize) {
         return (axisSize % 2 == 0) ? centerBlockCoord + 1.0 : centerBlockCoord + 0.5;
+    }
+    
+    private static boolean isCorner(BlockPos currentPos, BlockPos centerPos, int tX, int tY, int tZ) {
+        int x = currentPos.getX();
+        int y = currentPos.getY();
+        int z = currentPos.getZ();
+        
+        int xMin = centerPos.getX() + thicknessLow(tX);
+        int yMin = centerPos.getY() + thicknessLow(tY);
+        int zMin = centerPos.getZ() + thicknessLow(tZ);
+        int xMax = centerPos.getX() + thicknessHigh(tX);
+        int yMax = centerPos.getY() + thicknessHigh(tY);
+        int zMax = centerPos.getZ() + thicknessHigh(tZ);
+        
+        boolean xThick = tX >= 3;
+        boolean yThick = tY >= 3;
+        boolean zThick = tZ >= 3;
+        
+        int thickAxes = (xThick ? 1 : 0) + (yThick ? 1 : 0) + (zThick ? 1 : 0);
+        if (thickAxes < 2) return false;
+        
+        boolean xOk = !xThick || x == xMin || x == xMax;
+        boolean yOk = !yThick || y == yMin || y == yMax;
+        boolean zOk = !zThick || z == zMin || z == zMax;
+        
+        return xOk && yOk && zOk;
     }
 
     private record Node(int id, BlockPos pos) {}

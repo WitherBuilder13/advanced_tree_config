@@ -2,6 +2,7 @@ package me.witherbuilder13.advanced_tree_config.datagen;
 
 import me.witherbuilder13.advanced_tree_config.AdvancedTreeConfig;
 import me.witherbuilder13.advanced_tree_config.feature.AdvancedTreeFeature;
+import me.witherbuilder13.advanced_tree_config.feature.util.BranchShape;
 import me.witherbuilder13.advanced_tree_config.feature.util.branchcondition.BranchCondition;
 import me.witherbuilder13.advanced_tree_config.util.ATCRegistries;
 import me.witherbuilder13.advanced_tree_config.feature.util.Branch;
@@ -14,6 +15,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -32,7 +34,12 @@ public class ATCFeatures {
                 List.of(
                         Branch.Group.create(
                                 new Branch(1, 0, 1, BlockStateProvider.simple(Blocks.OAK_LOG), Holder.direct(
-                                        Branch.Config.builder(SimpleBlockVector.of().lengthY(UniformInt.of(4, 6)))
+                                        Branch.Config.builder(SimpleBlockVector.of())
+                                                .offsetY(ConstantInt.of(10))
+                                                .thicknessX(UniformInt.of(1, 5))
+                                                .thicknessY(UniformInt.of(1, 5))
+                                                .thicknessZ(UniformInt.of(1, 5))
+                                                .shape(BranchShape.SQUARE_CUT_CORNERS)
                                                 .build()
                                 ))
                         )

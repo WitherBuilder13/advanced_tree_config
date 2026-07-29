@@ -30,7 +30,10 @@ bin/
 
 # fabric
 
-run/
+/run/
+src/client/java/me/witherbuilder13/advanced_tree_config/client/ATCDataGenerator.java
+/src/main/generated/
+src/main/java/me/witherbuilder13/advanced_tree_config/datagen/
 
 # java
 
