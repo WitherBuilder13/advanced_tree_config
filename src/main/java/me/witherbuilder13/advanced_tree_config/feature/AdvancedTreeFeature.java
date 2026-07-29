@@ -9,6 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
@@ -176,20 +177,27 @@ public record AdvancedTreeFeature(List<Branch.Group> groups, boolean rotateRando
                 for (int z = thicknessLow(tZ); z <= thicknessHigh(tZ); z++) {
                     BlockPos currentPos = pos.offset(x, y, z);
 
-
+                    BlockState state = provider.getState(level, random, currentPos);
 
                     if (config.shape() == BranchShape.ROUND) {
                         if (isWithinEllipsoid(currentPos, pos, new Vec3i(tX, tY, tZ))) {
-                            if (provider.getState(level, random, currentPos).equals(level.getBlockState(currentPos)))
+                            if (state.equals(level.getBlockState(currentPos)))
                                 continue;
-                            if (!level.setBlock(currentPos, provider.getState(level, random, currentPos), 19)) {
+                            if (!level.setBlock(currentPos, state, 19)) {
                                 return false;
                             }
                         }
-                    } else {
-                        if (provider.getState(level, random, currentPos).equals(level.getBlockState(currentPos)))
+                    } else if (config.shape() == BranchShape.SQUARE_CUT_CORNERS) {
+                        if ((tX > 2 && (currentPos.getX() == pos.getX() + thicknessLow(tX) || currentPos.getX() == pos.getX() + thicknessHigh(tX))) ||
+                                (tY > 2 && (currentPos.getY() == pos.getY() + thicknessLow(tY) || currentPos.getY() == pos.getY() + thicknessHigh(tY))) ||
+                                (tZ > 2 && (currentPos.getZ() == pos.getZ() + thicknessLow(tZ) || currentPos.getZ() == pos.getZ() + thicknessHigh(tZ))))
                             continue;
-                        if (!level.setBlock(pos.offset(x, y, z), provider.getState(level, random, currentPos), 19))
+                        if (!level.setBlock(currentPos, state, 19))
+                            return false;
+                    } else {
+                        if (state.equals(level.getBlockState(currentPos)))
+                            continue;
+                        if (!level.setBlock(currentPos, state, 19))
                             return false;
                     }
                 }
