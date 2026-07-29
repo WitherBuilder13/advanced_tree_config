@@ -31,9 +31,6 @@ bin/
 # fabric
 
 /run/
-src/client/java/me/witherbuilder13/advanced_tree_config/client/ATCDataGenerator.java
-/src/main/generated/
-src/main/java/me/witherbuilder13/advanced_tree_config/datagen/
 
 # java
 
@@ -41,3 +38,6 @@ hs_err_*.log
 replay_*.log
 *.hprof
 *.jfr
+/src/main/generated/
+/src/main/java/me/witherbuilder13/advanced_tree_config/datagen/
+/src/client/java/me/witherbuilder13/advanced_tree_config/datagen/

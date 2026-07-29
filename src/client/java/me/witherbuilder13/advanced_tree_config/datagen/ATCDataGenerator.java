@@ -1,8 +1,5 @@
-package me.witherbuilder13.advanced_tree_config.client;
+package me.witherbuilder13.advanced_tree_config.datagen;
 
-import me.witherbuilder13.advanced_tree_config.datagen.ATCDynamicRegistries;
-import me.witherbuilder13.advanced_tree_config.datagen.ATCFeatures;
-import me.witherbuilder13.advanced_tree_config.datagen.BuiltinBranchConfigs;
 import me.witherbuilder13.advanced_tree_config.util.ATCRegistries;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
