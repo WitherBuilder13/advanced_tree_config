@@ -1,3 +1,6 @@
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
 plugins {
 	id 'net.fabricmc.fabric-loom' version "${loom_version}"
 	id 'maven-publish'
@@ -44,13 +47,41 @@ processResources {
 	def version = project.version
 	inputs.property "version", version
 
+	def datagen = project.hasProperty("datagen")
+	inputs.property "datagen", datagen
+
 	filesMatching("fabric.mod.json") {
 		expand "version": version
+		expand "datagen_entrypoint": datagen
+		? ',"fabric-datagen" : "me.witherbuilder13.advanced_tree_config.datagen.ATCDataGenerator"'
+		: ''
+	}
+
+	doLast {
+		if (project.hasProperty("datagen")) {
+			def modJsonFile = file("${outputs.files.singleFile}/fabric.mod.json")
+			def json = new JsonSlurper().parse(modJsonFile)
+
+			json.entrypoints["fabric-datagen"] =
+					["me.witherbuilder13.advanced_tree_config.datagen.ATCDataGenerator"]
+
+			modJsonFile.text = JsonOutput.prettyPrint(
+                    JsonOutput.toJson(json)
+			)
+		}
 	}
 }
 
 tasks.withType(JavaCompile).configureEach {
 	it.options.release = 25
+}
+
+tasks.register("datagen") {
+	group = "fabric"
+	doFirst {
+		project.ext.datagen = true
+	}
+	finalizedBy("runDatagen")
 }
 
 java {
