@@ -3,9 +3,9 @@
 	"id": "advanced_tree_config",
 	"version": "${version}",
 	"name": "Advanced Tree Config",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "A library mod for much more complex trees",
 	"authors": [
-		"Me!"
+		"WitherBuilder13"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",

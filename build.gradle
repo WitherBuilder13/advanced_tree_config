@@ -52,9 +52,6 @@ processResources {
 
 	filesMatching("fabric.mod.json") {
 		expand "version": version
-		expand "datagen_entrypoint": datagen
-		? ',"fabric-datagen" : "me.witherbuilder13.advanced_tree_config.datagen.ATCDataGenerator"'
-		: ''
 	}
 
 	doLast {
@@ -74,14 +71,6 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
 	it.options.release = 25
-}
-
-tasks.register("datagen") {
-	group = "fabric"
-	doFirst {
-		project.ext.datagen = true
-	}
-	finalizedBy("runDatagen")
 }
 
 java {
